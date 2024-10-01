@@ -1,0 +1,38 @@
+[
+	{
+		"image": "/images/table.webp",
+		"name": "Table",
+		"url": "/ads/table",
+		"price": 120
+	},
+	{
+		"image": "/images/dame-jeanne.webp",
+		"name": "Dame-jeanne",
+		"url": "/ads/dame-jeanne",
+		"price": 75
+	},
+	{
+		"image": "/images/vide-poche.webp",
+		"name": "Vide-poche",
+		"url": "/ads/vide-poche",
+		"price": 4
+	},
+	{
+		"image": "/images/vaisselier.webp",
+		"name": "Vaisselier",
+		"url": "/ads/vaisselier",
+		"price": 900
+	},
+	{
+		"image": "/images/porte-magazine.webp",
+		"name": "Porte-magazine",
+		"url": "/ads/porte-magazine",
+		"price": 45
+	},
+	{
+		"image": "/images/vaisselier.webp",
+		"name": "Vaisselier",
+		"url": "/ads/vaisselier",
+		"price": 900
+	}
+]
