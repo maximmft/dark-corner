@@ -20,7 +20,7 @@ h1 {
 	right: 0;
 	border-bottom: 1px solid lightgray;
 	padding: 10px;
-	background-color: white;
+	background-color: rgb(29, 29, 30);
 }
 
 .main-menu {
@@ -118,10 +118,13 @@ h1 {
 
 .ad-card-container {
 	border-radius: 8px;
-	border: 1px solid lightgray;
-	color: inherit;
-	background-color: #1d1d21;
+    border: 1px solid lightgray;
+    color: inherit;
+    width: 25%;
+    margin-top: 2rem;
+    background-color: #1d1d21;
 }
+
 
 .ad-card-link {
 	text-decoration: inherit;

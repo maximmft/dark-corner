@@ -1,0 +1,48 @@
+#adDetail img{
+    width: 400px;
+}
+
+#adDetail .main-content{
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 50px;
+}
+
+#adDetail .informations-section{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#adDetail .informations{
+margin-left: 20px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+#adDetail h1 {
+   font-size: 40px;
+  }
+
+  #adDetail .tags{
+    border: solid;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-right: 9px;
+}
+
+#adDetail form{
+    display: flex;
+    flex-direction: column;
+}
+
+#adDetail label {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  
+#adDetail .buttons {
+    display: flex;
+    flex-direction: row;
+  }

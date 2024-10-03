@@ -15,6 +15,7 @@ function RecentAds() {
     fetchData();
   }, []);
 
+
   return (
     <main className="main-content">
       <h2>Annonces récentes</h2>

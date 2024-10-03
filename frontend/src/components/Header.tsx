@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
 export type CategoriesType = {
   id: number;
   name: string;
@@ -21,14 +20,13 @@ function Header() {
     fetchData();
   }, []);
 
-
   return (
     <header className="header">
       <div className="main-menu">
         <h1>
           <a href="/" className="button logo link-button">
             <span className="mobile-short-label">TGC</span>
-            <span className="desktop-long-label">THE GOOD CORNER</span>
+            <span className="desktop-long-label">THE DARK CORNER</span>
           </a>
         </h1>
         <form className="text-field-with-button">
@@ -49,10 +47,12 @@ function Header() {
             </svg>
           </button>
         </form>
-        <a href="/post-ad" className="button link-button">
-          <span className="mobile-short-label">Publier</span>
-          <span className="desktop-long-label">Publier une annonce</span>
-        </a>
+        <div className="post-ad-container">
+          <div  className="button link-button">
+            <span className="mobile-short-label">Publier</span>
+            <a href="/form" className="desktop-long-label">Publier une annonce</a>
+          </div>
+        </div>
       </div>
       <nav className="categories-navigation">
         {categories.map((cat, id) => (
