@@ -1,0 +1,82 @@
+
+GET http://localhost:3000
+
+###
+GET http://localhost:3000/ads
+
+###
+GET http://localhost:3000/ads?category=Drogues
+
+
+###
+GET http://localhost:3000/ads/74
+
+###
+DELETE http://localhost:3000/ads/52
+
+###
+PUT http://localhost:3000/ads/74
+Content-Type: application/json
+
+{
+    "title": "Fleur de Pet",
+    "description": "Etagere tres belle en chene",
+    "owner": "Maxime",
+    "price": 100,
+    "location": "Paris"
+  }
+
+###
+POST http://localhost:3000/ads
+Content-Type: application/json
+
+{
+		"title":"Kart Standard",
+		"description":"Va vite, sans plus",
+		"owner":"Mario",
+		"price":1000,
+		"createdAt":"hier",
+		"picture":"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.carrefour.fr%2Fp%2Fvoiture-telecommandee-jouet-nintendo-mario-kart-carrera-9003150116448&psig=AOvVaw13M_1GuGOGhTjn5l0QNvhz&ust=1727947947489000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLi8p_Kx74gDFQAAAAAdAAAAABAE",
+		"location":"Royaume Champi",
+		"categoryId": 20,
+		"tagIds": [3,4]
+}
+
+
+//CATEGORIES
+
+###
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+		"name":"Véhicules"
+
+}
+
+
+###
+GET http://localhost:3000/categories
+
+###
+GET http://localhost:3000/categories?name=Guns
+
+###
+DELETE http://localhost:3000/categories/16
+
+//TAGS
+
+###
+GET http://localhost:3000/tags
+
+###
+POST http://localhost:3000/tags
+Content-Type: application/json
+
+{
+		"name":"Sans pitié"
+
+}
+
+###
+DELETE http://localhost:3000/tags/1
