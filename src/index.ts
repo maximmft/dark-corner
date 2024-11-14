@@ -1,31 +1,25 @@
 import "reflect-metadata";
-import cors from "cors"
-import express from "express";
-import path from "path";
 import { dataSource } from "./config/db";
-import sqlite3 from "sqlite3";
-import adsRouter from "./router/ads/router"
-import categoryRouter from "./router/category/router"
-import tagRouter from "./router/tags/router";
-const db = new sqlite3.Database("./the-good-corner.sqlite");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, '../front-end/public/images')));
+import { buildSchema } from "type-graphql";
+import { AdResolver } from "./resolvers/AdResolver";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
 const port = 3000;
 
-app.use("/ads", adsRouter);
-app.use("/categories", categoryRouter);
-app.use("/tags", tagRouter)
+const start = async () => {
+	await dataSource.initialize();
 
-app.listen(port, async () => {
-  await dataSource.initialize();
-  console.log(`Example app listening on port ${port}`);
-});
+	const schema = await buildSchema({
+		resolvers: [AdResolver],
+	});
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+	const apiServer = new ApolloServer({ schema });
 
+	const { url } = await startStandaloneServer(apiServer, {
+		listen: { port: port },
+	});
+	console.log("Hey, ça marche ! =D");
+	console.log(url);
+};
+start();

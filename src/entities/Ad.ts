@@ -1,40 +1,67 @@
-import { Length } from "class-validator";
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+	BaseEntity,
+	BeforeInsert,
+	Column,
+	Entity,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from "typeorm";
 import { Category } from "./Category";
 import { Tag } from "./Tag";
+import { Field, ObjectType } from "type-graphql";
 
 @Entity()
+@ObjectType()
 export class Ad extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+	@Field()
+	@PrimaryGeneratedColumn()
+	id!: string;
 
-  @Column({length:100})
-  title!: string;
+	@Field()
+	@Column()
+	title!: string;
 
-  @Column()
-  @Length(10,100,{
-    message: "Entre 10 et 100 caractères"
-  })
-  description?: string;
+	@Field()
+	@Column({ nullable: true })
+	description?: string;
 
-  @Column()
-  owner!: string;
+	@Field()
+	@Column()
+	owner!: string;
 
-  @Column()
-  price!: number;
+	@Field()
+	@Column()
+	price!: number;
 
-  @Column()
-  picture!: string;
+	@Field()
+	@Column()
+	picture!: string;
 
-  @Column()
-  location!: string;
+	@Field()
+	@Column()
+	location!: string;
 
-  @Column()
-  createdAt!: string;
+	@Field()
+	@Column()
+	createdAt!: Date;
 
-  @ManyToOne(() => Category, category => category.ads) category!: Category; 
-  @ManyToMany(() => Tag, (tag) => tag.ads)
-  @JoinTable()
-  tags!: Tag[];
+	@BeforeInsert()
+	updateDates() {
+		this.createdAt = new Date();
+	}
 
+	@ManyToOne(
+		() => Category,
+		(category) => category.ads,
+	)
+	category!: Category;
+
+	@ManyToMany(
+		() => Tag,
+		(tag) => tag.ads,
+	)
+	@JoinTable()
+	tags!: Tag[];
 }
