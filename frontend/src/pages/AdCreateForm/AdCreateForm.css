@@ -1,0 +1,22 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+#AdCreateForm label {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+#AdCreateForm select {
+    max-width: 150px;
+    min-height: 30px;
+    }
+  
+
+#AdCreateForm .title {
+  margin: 20px 0;
+}
