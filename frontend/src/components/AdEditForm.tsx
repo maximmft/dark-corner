@@ -17,6 +17,8 @@ type AdEditFormProps = {
   setEditMode: (editMode: boolean) => void;
 };
 
+
+
 const AdEditForm: React.FC<AdEditFormProps> = ({
   ads,
   categories,
@@ -27,6 +29,7 @@ const AdEditForm: React.FC<AdEditFormProps> = ({
   handleChangeCategory,
   setEditMode,
 }) => {
+  
   return (
     <main id="adDetail">
       <section className="main-content">

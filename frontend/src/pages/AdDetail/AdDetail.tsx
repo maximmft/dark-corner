@@ -1,4 +1,3 @@
-import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdCardType } from "../../types/AdCardType";
@@ -6,6 +5,13 @@ import "./AdDetail.css";
 import { CategoryType } from "../../types/Category";
 import { TagsOptionType, TagsType } from "../../types/TagsType";
 import AdEditForm from "../../components/AdEditForm";
+import { GET_CATEGORIES } from "../../queries/get-categories";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_AD_ID } from "../../queries/ads/get-ads-by-id";
+import { DELETE_AD } from "../../mutations/ads/delete-ads";
+import { GET_TAGS } from "../../queries/get-tags";
+import { PATCH_AD } from "../../mutations/ads/patch-ads";
+import { GET_AD_CAT_TAG } from "../../queries/multiples/get-ad-cat-tag";
 
 export default function AdDetail() {
   const { adId } = useParams();
@@ -17,44 +23,65 @@ export default function AdDetail() {
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const navigate = useNavigate();
 
-  console.log("selecttage", selectedTags);
+  //const { data: categoriesData } = useQuery(GET_CATEGORIES);
+
+ // const { data: tagsData } = useQuery(GET_TAGS);
+
+  //const { loading, error, data, refetch } = useQuery(GET_AD_ID, {
+  const {loading, error, data, refetch} = useQuery(GET_AD_CAT_TAG, {
+    variables: { adId },
+  });
+
+  console.log("DATA",data);
   
+  useEffect(() => {
+    if (data) {
+      setAds(data?.getAdById);
+      setSelectedCategory(data.getAdById.category.id);
+    }
+
+    if (data?.getCategories) {
+      setCategories(data.getCategories);
+    }
+
+    if (data?.getTags) {
+      const tagOptions: TagsOptionType[] = data.getTags.map(
+        (tag: TagsType) => ({
+          value: tag.id,
+          label: tag.name,
+        })
+      );
+      setOptions(tagOptions);
+    }
+  }, [data]);
+
   
-  async function fetchData() {
-    const { data } = await axios.get<AdCardType>(
-      `http://localhost:3000/ads/${adId}`
-    );
-    setAds(data);
-    setSelectedCategory(data.category.id);
-    if (Array.isArray(data.tags)) {
-      setSelectedTags(data.tags as TagsOptionType[]); 
-    }    console.log(ads);
-    
-  }
 
-  async function fetchCategories() {
-    const { data } = await axios.get("http://localhost:3000/categories");
-    setCategories(data);
-    return data;
-  }
+  const [deleteAd] = useMutation(DELETE_AD, {
+    onCompleted: () => {
+      navigate("/");
+    },
+    onError: (error) => {
+      console.error("Erreur lors de la suppression", error);
+    },
+  });
 
-  console.log("ads", ads);
-
-  async function fetchTags() {
-    const { data } = await axios.get("http://localhost:3000/tags");
-    const tagOptions: TagsOptionType[] = data.map((tag: TagsType) => ({
-      value: tag.id,
-      label: tag.name,
-    }));
-    setOptions(tagOptions);
-    return data;
-  }
+  const [patchAd] = useMutation(PATCH_AD, {
+    onCompleted: () => {
+      refetch();
+      setEditMode(false);
+    },
+    onError: (error) => {
+      console.error("Erreur lors de la modification", error);
+    },
+  });
 
   const handleDelete = () => {
-    const confirmDelete = window.confirm("Etes vous sur?");
+    const confirmDelete = window.confirm("Êtes vous sur?");
     if (confirmDelete) {
-      axios.delete(`http://localhost:3000/ads/${adId}`);
-      navigate(-1);
+      deleteAd({
+        variables: { adId },
+      });
     }
   };
 
@@ -68,37 +95,33 @@ export default function AdDetail() {
     const formData = new FormData(form as HTMLFormElement);
     const formJson = Object.fromEntries(formData.entries());
 
-    if (selectedCategory) {
-      formJson.categoryId = selectedCategory.toString();
-    }
-
-    if (selectedTags) {
-      formJson.tags = JSON.stringify(selectedTags.map(tag => tag.value));
-    }
-
-    console.log("formJson", formJson);
+    const data = {
+      title: formJson.title as string,
+      description: formJson.description as string,
+      owner: formJson.owner as string,
+      price: parseFloat(formJson.price as string),
+      picture: formJson.picture as string,
+      location: formJson.location as string,
+      categoryId: selectedCategory ? selectedCategory.toString() : undefined,
+      tagId: selectedTags ? selectedTags.map((tag) => tag.value) : [],
+    };
 
     try {
-      await axios.put(`http://localhost:3000/ads/${adId}`, formJson);
-
+      await patchAd({
+        variables: {
+          adId,
+          data,
+        },
+      });
       setEditMode(false);
-      fetchData();
     } catch (error) {
       console.error("Erreur lors de la modification de l'annonce :", error);
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-    fetchCategories();
-    fetchTags();
-    if (ads) {
-      setSelectedCategory(ads.category.id);
-    }
-  }, [adId]);
-
-  console.log("selected Cate", selectedCategory);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
 
   return (
     <main id="adDetail">
@@ -110,7 +133,7 @@ export default function AdDetail() {
             options={options}
             selectedTags={selectedTags}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory} 
+            setSelectedCategory={setSelectedCategory}
             setSelectedTags={setSelectedTags}
             handleEdit={handleEdit}
             handleChangeCategory={handleChangeCategory}
@@ -122,10 +145,11 @@ export default function AdDetail() {
               <h1>{ads.title}</h1>
               <p>Catégorie: {ads.category.name}</p>
               <p>
-
                 {Array.isArray(ads.tags) ? (
                   ads?.tags.map((tag: TagsType) => (
-                    <span className="tags" key={tag.id}>{tag.name} </span>
+                    <span className="tags" key={tag.id}>
+                      {tag.name}{" "}
+                    </span>
                   ))
                 ) : (
                   <span>{ads.tags.name} </span>
@@ -140,7 +164,9 @@ export default function AdDetail() {
                   <button onClick={() => setEditMode(true)}>
                     Modifier cette annonce
                   </button>
-                  <button onClick={handleDelete}>Supprimer cette annonce</button>
+                  <button onClick={handleDelete}>
+                    Supprimer cette annonce
+                  </button>
                 </div>
               )}
             </div>

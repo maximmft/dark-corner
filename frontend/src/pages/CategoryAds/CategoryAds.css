@@ -4,3 +4,7 @@
     flex-wrap: wrap;
     gap: 30px;
 }
+
+#CategoryAds h1{
+   margin-top: 150px;
+}
